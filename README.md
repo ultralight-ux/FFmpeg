@@ -1,46 +1,76 @@
-FFmpeg README
-=============
+# GStreamer Build Instructions
 
-FFmpeg is a collection of libraries and tools to process multimedia content
-such as audio, video, subtitles and related metadata.
+## Setting up your build environment
 
-## Libraries
+### Setting up on Windows
 
-* `libavcodec` provides implementation of a wider range of codecs.
-* `libavformat` implements streaming protocols, container formats and basic I/O access.
-* `libavutil` includes hashers, decompressors and miscellaneous utility functions.
-* `libavfilter` provides a mean to alter decoded Audio and Video through chain of filters.
-* `libavdevice` provides an abstraction to access capture and playback devices.
-* `libswresample` implements audio mixing and resampling routines.
-* `libswscale` implements color conversion and scaling routines.
+1. Install Visual Studio 2019 (Free Community Edition works fine). Remember to select the C++ packages.
+2. Install Chocolatey (https://chocolatey.org).
+3. Run the following from command line: 
 
-## Tools
+```
+choco install cmake ninja msys2
+```
 
-* [ffmpeg](https://ffmpeg.org/ffmpeg.html) is a command line toolbox to
-  manipulate, convert and stream multimedia content.
-* [ffplay](https://ffmpeg.org/ffplay.html) is a minimalistic multimedia player.
-* [ffprobe](https://ffmpeg.org/ffprobe.html) is a simple analysis tool to inspect
-  multimedia content.
-* Additional small tools such as `aviocat`, `ismindex` and `qt-faststart`.
+*The build scripts expect that msys2 will be installed to `C:\tools\msys64`. You'll need to pass `-DUL_MSYS2_PATH="C:\your\msys2\path"` to the CMake command line if this is not the case.*
 
-## Documentation
+4. Run the msys2 shell (open a new command prompt and type `msys2`) and run the following to install the needed development packages:
 
-The offline documentation is available in the **doc/** directory.
+```
+pacman -S --needed base-devel
+```
 
-The online documentation is available in the main [website](https://ffmpeg.org)
-and in the [wiki](https://trac.ffmpeg.org).
+Hit Enter to install all packages by default.
 
-### Examples
+### Setting up on macOS
 
-Coding examples are available in the **doc/examples** directory.
+1. Install Xcode 9.4.1 (Older versions of Xcode can be found here: https://developer.apple.com/download/more/)
+2. Install Homebrew (https://brew.sh/)
+3. Run the following from command line:
 
-## License
+```
+brew install cmake ninja
+```
 
-FFmpeg codebase is mainly LGPL-licensed with optional components licensed under
-GPL. Please refer to the LICENSE file for detailed information.
+### Setting up on Linux 
 
-## Contributing
+To get everything on Linux, just type the following:
+ 
+```
+sudo apt install cmake ninja-build
+```
 
-Patches should be submitted to the ffmpeg-devel mailing list using
-`git format-patch` or `git send-email`. Github pull requests should be
-avoided because they are not part of our review process and will be ignored.
+## Building from source
+
+### Building on Windows
+
+At present, to build with Visual Studio, you need to run cmake from inside the
+VS 2019 command prompt. Press `Start`, and search for `VS 2019`, and click on
+`x64 Native Tools Command Prompt for VS 2019`, or a prompt named similar to
+that.
+
+Then, from the `x64 Native Tools Command Prompt for VS 2019`, change directories to this folder and run the following:
+
+```
+mkdir build
+cd build
+cmake .. -GNinja
+ninja
+ninja install
+```
+
+### Building on macOS and Linux
+
+To build for macOS/Linux:
+
+```
+mkdir build
+cd build
+cmake .. -GNinja
+ninja
+ninja install
+```
+
+## Build products
+
+Build products will be in `<build_dir>/out`.
