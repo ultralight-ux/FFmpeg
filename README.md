@@ -1,4 +1,4 @@
-# GStreamer Build Instructions
+# FFmpeg Build Instructions
 
 ## Setting up your build environment
 
