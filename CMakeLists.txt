@@ -21,47 +21,55 @@ set(FFMPEG_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE PATH "Location of 'ffmpeg'")
 set(FFMPEG_BUILD_DIR "${CMAKE_BINARY_DIR}/ffmpeg")
 set(FFMPEG_INSTALL_DIR "${FFMPEG_BUILD_DIR}/out")
 
-set(CONFIG_ARGS "${FFMPEG_DIR}/configure --prefix=${FFMPEG_INSTALL_DIR}")
+set(CONFIG_ARGS ${FFMPEG_DIR}/configure --prefix=${FFMPEG_INSTALL_DIR})
 
 if (CMAKE_SYSTEM_NAME MATCHES "Linux")
-    set(CONFIG_ARGS "${CONFIG_ARGS} --enable-pic --disable-asm")
+    list(APPEND CONFIG_ARGS --enable-pic --disable-asm)
 elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
-    set(CONFIG_ARGS "${CONFIG_ARGS} --enable-asm")
+    list(APPEND CONFIG_ARGS --enable-asm)
 elseif (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    set(CONFIG_ARGS "${CONFIG_ARGS} --toolchain=msvc --enable-asm")
+    list(APPEND CONFIG_ARGS --toolchain=msvc --enable-asm)
 else ()
     message(FATAL_ERROR "Unhandled target OS: '${CMAKE_SYSTEM_NAME}'")
 endif ()
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 4)
     # CMake Target arch is 32-bit
-    set(CONFIG_ARGS "${CONFIG_ARGS} --arch=x86")
+    list(APPEND CONFIG_ARGS --arch=x86)
 else ()
-    set(CONFIG_ARGS "${CONFIG_ARGS} --arch=x86_64")
+    list(APPEND CONFIG_ARGS --arch=x86_64)
 endif()
 
 # Set common args (disable everything by default, we'll enable what we need below)
-set(CONFIG_ARGS "${CONFIG_ARGS} --enable-static --disable-shared --disable-encoders --disable-muxers --disable-filters --disable-decoders --disable-parsers --disable-demuxers --disable-protocols --disable-devices")
+list(APPEND CONFIG_ARGS --enable-static --disable-shared --disable-encoders --disable-muxers --disable-filters --disable-decoders --disable-parsers --disable-demuxers --disable-protocols --disable-devices)
 
 # Disable debug symbols in non-debug builds
 if (NOT CMAKE_BUILD_TYPE MATCHES "Debug")
-    set(CONFIG_ARGS "${CONFIG_ARGS} --disable-debug")
+    list(APPEND CONFIG_ARGS --disable-debug)
 endif ()
 
 # Enable decoders one by one
 foreach(decoder ${DECODERS})
-    set(CONFIG_ARGS "${CONFIG_ARGS} --enable-decoder=${decoder}")
+    list(APPEND CONFIG_ARGS --enable-decoder=${decoder})
 endforeach()
 
 # Enable parsers one by one
 foreach(parser ${PARSERS})
-    set(CONFIG_ARGS "${CONFIG_ARGS} --enable-parser=${parser}")
+    list(APPEND CONFIG_ARGS --enable-parser=${parser})
 endforeach()
 
 # Enable demuxers one by one
 foreach(demuxer ${DEMUXERS})
-    set(CONFIG_ARGS "${CONFIG_ARGS} --enable-demuxer=${demuxer}")
+    list(APPEND CONFIG_ARGS --enable-demuxer=${demuxer})
 endforeach()
+
+function(JOIN VALUES GLUE OUTPUT)
+  string (REGEX REPLACE "([^\\]|^);" "\\1${GLUE}" _TMP_STR "${VALUES}")
+  string (REGEX REPLACE "[\\](.)" "\\1" _TMP_STR "${_TMP_STR}") #fixes escaping
+  set (${OUTPUT} "${_TMP_STR}" PARENT_SCOPE)
+endfunction()
+
+JOIN("${CONFIG_ARGS}" " " CONFIG_ARGS_STR)
 
 if (CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
     if (NOT EXISTS ${UL_MSYS2_PATH})
@@ -69,9 +77,10 @@ if (CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
     endif ()
 
     add_custom_command(OUTPUT "${FFMPEG_BUILD_DIR}/config.h"
-                        COMMAND cmd /c ${UL_MSYS2_PATH} -mingw64 -use-full-path -here -defterm -no-start -c ${CONFIG_ARGS}
+                        COMMAND cmd /c ${UL_MSYS2_PATH} -mingw64 -use-full-path -here -defterm -no-start -c ${CONFIG_ARGS_STR}
                         WORKING_DIRECTORY "${FFMPEG_BUILD_DIR}"
-                        COMMENT "Configuring FFmpeg.")
+                        COMMENT "Configuring FFmpeg."
+                        VERBATIM)
 
     add_custom_command(OUTPUT "${FFMPEG_BUILD_DIR}/ffmpeg.exe"
                         COMMAND cmd /c ${UL_MSYS2_PATH} -mingw64 -use-full-path -here -defterm -no-start -c "make -j8"
@@ -104,9 +113,10 @@ if (CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
     endif ()
 else ()
     add_custom_command(OUTPUT "${FFMPEG_BUILD_DIR}/config.h"
-                        COMMAND "bash ${CONFIG_ARGS}"
+                        COMMAND ${CONFIG_ARGS_STR}
                         WORKING_DIRECTORY "${FFMPEG_BUILD_DIR}"
-                        COMMENT "Configuring FFmpeg.")
+                        COMMENT "Configuring FFmpeg."
+                        VERBATIM)
 
     add_custom_command(OUTPUT "${FFMPEG_BUILD_DIR}/ffmpeg"
                         COMMAND "make -j8"
