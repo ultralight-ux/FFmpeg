@@ -104,7 +104,7 @@ if (CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
     endif ()
 else ()
     add_custom_command(OUTPUT "${FFMPEG_BUILD_DIR}/config.h"
-                        COMMAND ${CONFIG_ARGS}
+                        COMMAND bash ${CONFIG_ARGS}
                         WORKING_DIRECTORY "${FFMPEG_BUILD_DIR}"
                         COMMENT "Configuring FFmpeg.")
 

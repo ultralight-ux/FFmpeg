@@ -9,7 +9,7 @@
 3. Run the following from command line: 
 
 ```
-choco install cmake ninja msys2
+choco install cmake ninja nasm msys2
 ```
 
 *The build scripts expect that msys2 will be installed to `C:\tools\msys64`. You'll need to pass `-DUL_MSYS2_PATH="C:\your\msys2\path"` to the CMake command line if this is not the case.*
@@ -21,6 +21,11 @@ pacman -S --needed base-devel
 ```
 
 Hit Enter to install all packages by default.
+
+5. Add the following locations to your PATH on Windows (or similar locations if Windows was not installed on the C: drive):
+
+ * `C:\Program Files\CMake\bin`
+ * `C:\Program Files\NASM`
 
 ### Setting up on macOS
 
