@@ -34,7 +34,7 @@ Hit Enter to install all packages by default.
 3. Run the following from command line:
 
 ```
-brew install cmake ninja
+brew install cmake ninja nasm
 ```
 
 ### Setting up on Linux 
