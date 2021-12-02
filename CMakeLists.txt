@@ -113,19 +113,19 @@ if (CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
     endif ()
 else ()
     add_custom_command(OUTPUT "${FFMPEG_BUILD_DIR}/config.h"
-                        COMMAND ${CONFIG_ARGS_STR}
+                        COMMAND ${CONFIG_ARGS}
                         WORKING_DIRECTORY "${FFMPEG_BUILD_DIR}"
                         COMMENT "Configuring FFmpeg."
                         VERBATIM)
 
     add_custom_command(OUTPUT "${FFMPEG_BUILD_DIR}/ffmpeg"
-                        COMMAND "make -j8"
+                        COMMAND make -j8
                         DEPENDS "${FFMPEG_BUILD_DIR}/config.h"
                         WORKING_DIRECTORY "${FFMPEG_BUILD_DIR}"
                         COMMENT "Building FFmpeg.")
 
     add_custom_command(OUTPUT "${FFMPEG_INSTALL_DIR}/lib/libavcodec.a"
-                        COMMAND "make install"
+                        COMMAND make install
                         DEPENDS "${FFMPEG_BUILD_DIR}/ffmpeg"
                         WORKING_DIRECTORY "${FFMPEG_BUILD_DIR}"
                         COMMENT "Installing FFmpeg.")
