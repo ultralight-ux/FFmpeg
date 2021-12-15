@@ -1,10 +1,7 @@
 cmake_minimum_required(VERSION 3.15.0)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
 
-set(CMAKE_BUILD_TYPE "Release"                            CACHE STRING  "Choose the type of build.")
-set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/out  CACHE PATH    "The path to install to.")
-set(UL_MSYS2_PATH "C:\\tools\\msys64\\msys2_shell.cmd"    CACHE PATH    "(Windows only) The path to the MSYS2 shell script.")
-
-set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+include(common)
 
 project(FFmpeg C CXX)
 
@@ -23,22 +20,10 @@ set(FFMPEG_INSTALL_DIR "${FFMPEG_BUILD_DIR}/out")
 
 set(CONFIG_ARGS ${FFMPEG_DIR}/configure --prefix=${FFMPEG_INSTALL_DIR})
 
-if (CMAKE_SYSTEM_NAME MATCHES "Linux")
-    list(APPEND CONFIG_ARGS --enable-pic --disable-asm)
-elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
-    list(APPEND CONFIG_ARGS --enable-asm)
-elseif (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    list(APPEND CONFIG_ARGS --toolchain=msvc --enable-asm)
-else ()
-    message(FATAL_ERROR "Unhandled target OS: '${CMAKE_SYSTEM_NAME}'")
+# Platform-specific configure args should be defined in platform toolchain
+if (UL_FFMPEG_ARGS)
+    list(APPEND CONFIG_ARGS ${UL_FFMPEG_ARGS})
 endif ()
-
-if(CMAKE_SIZEOF_VOID_P EQUAL 4)
-    # CMake Target arch is 32-bit
-    list(APPEND CONFIG_ARGS --arch=x86)
-else ()
-    list(APPEND CONFIG_ARGS --arch=x86_64)
-endif()
 
 # Set common args (disable everything by default, we'll enable what we need below)
 list(APPEND CONFIG_ARGS --enable-static --disable-shared --disable-encoders --disable-muxers --disable-filters --disable-decoders --disable-parsers --disable-demuxers --disable-protocols --disable-devices)

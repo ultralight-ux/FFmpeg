@@ -12,9 +12,11 @@
 choco install cmake ninja nasm msys2
 ```
 
-*The build scripts expect that msys2 will be installed to `C:\tools\msys64`. You'll need to pass `-DUL_MSYS2_PATH="C:\your\msys2\path"` to the CMake command line if this is not the case.*
+*The build scripts expect that msys2 will be installed to `C:\tools\msys64`. You'll need to pass 
+`-DUL_MSYS2_PATH="C:\your\msys2\path"` to the CMake command line if this is not the case.*
 
-4. Run the msys2 shell (open a new command prompt and type `msys2`) and run the following to install the needed development packages:
+4. Run the msys2 shell (open a new command prompt and type `msys2`) and run the following to
+   install the needed development packages:
 
 ```
 pacman -S --needed base-devel
@@ -22,16 +24,19 @@ pacman -S --needed base-devel
 
 Hit Enter to install all packages by default.
 
-5. Add the following locations to your PATH on Windows (or similar locations if Windows was not installed on the C: drive):
+5. Add the following locations to your PATH on Windows (or similar locations if Windows was not
+   installed on the `C:\` drive):
 
  * `C:\Program Files\CMake\bin`
  * `C:\Program Files\NASM`
 
 ### Setting up on macOS
 
-1. Install Xcode 9.4.1 (Older versions of Xcode can be found here: https://developer.apple.com/download/more/)
-2. Install Homebrew (https://brew.sh/)
-3. Run the following from command line:
+1. Install Xcode Command Line Tools (or the full Xcode package).
+2. Download the macOS 10.13 Platform SDK from https://github.com/phracker/MacOSX-SDKs/releases and
+   extract it to `/Library/Developer/CommandLineTools/SDKs/MacOSX10.13.sdk`.
+3. Install Homebrew (https://brew.sh/)
+4. Run the following from the Terminal to setup the needed homebrew packages:
 
 ```
 brew install cmake ninja nasm
@@ -54,7 +59,8 @@ VS 2019 command prompt. Press `Start`, and search for `VS 2019`, and click on
 `x64 Native Tools Command Prompt for VS 2019`, or a prompt named similar to
 that.
 
-Then, from the `x64 Native Tools Command Prompt for VS 2019`, change directories to this folder and run the following:
+Then, from the `x64 Native Tools Command Prompt for VS 2019`, change directories to this folder
+and run the following:
 
 ```
 mkdir build
