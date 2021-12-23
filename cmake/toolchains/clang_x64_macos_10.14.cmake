@@ -1,7 +1,7 @@
-if (DEFINED TOOLCHAIN_MACOS_10_13_CLANG_CMAKE)
+if (DEFINED TOOLCHAIN_MACOS_10_14_CLANG_CMAKE)
   return ()
 else ()
-  set(TOOLCHAIN_MACOS_10_13_CLANG_CMAKE 1)
+  set(TOOLCHAIN_MACOS_10_14_CLANG_CMAKE 1)
 endif ()
 
 set(CMAKE_SYSROOT "/Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk"  CACHE PATH    "(macOS only) The path to the macOS platform SDK.")
